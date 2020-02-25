@@ -49,10 +49,9 @@ fn main() {
         my[(i, i+1)] = -1;
     }
     let m = mx.kronecker(&my);
-    let (I, J) = m.shape();
-    for i in 0..I {
-        for j in 0..J {
-            print!("{:?} ", m[(i,j)]);
+    for i in m.row_iter() {
+        for j in i.column_iter() {
+            print!("{:?} ", j[0]);
         }
         println!("")
     }
