@@ -1,93 +1,20 @@
-use nalgebra::{DMatrix, DVector};
-use itertools::Itertools;
-
-#[derive(Debug)]
-struct Linspace {
-    from: f64,
-    to: f64,
-    n: usize
-}
-
-impl Linspace {
-    fn new(from: f64, to: f64, n: usize) -> Linspace {
-        Linspace { from: from, to: to, n: n }
-    }
-
-    fn dx(&self) -> f64 {
-        (self.to - self.from)/(self.n - 1) as f64
-    }
-
-    fn gen(&self) -> impl Iterator<Item = f64> + '_ {
-        (0..(self.n))
-            .map(move |i| self.from + self.dx()*i as f64)
-    }
-}
-
-#[derive(Debug)]
-struct Stencil {
-    locs: Vec<(i32, i32)>,
-    vals: Vec<f64>
-}
-
-impl Stencil {
-    fn new(locs: Vec<(i32, i32)>, vals: Vec<f64>) -> Stencil {
-        Stencil { locs: locs, vals: vals }
-    }
-    
-    fn bounds(&self) -> ((i32, i32), (i32, i32)) {
-        let x_min = self.locs.iter().map(|x| x.0).min().expect("...interesting");
-        let y_min = self.locs.iter().map(|x| x.1).min().expect("...interesting");
-        let x_max = self.locs.iter().map(|x| x.0).max().expect("...interesting");
-        let y_max = self.locs.iter().map(|x| x.1).max().expect("...interesting");
-        ((x_min, x_max), (y_min, y_max))
-    }
-}
-
-#[derive(Debug)]
-struct Rectangle {
-    l_corner: (f64, f64),
-    u_corner: (f64, f64),
-    n: usize
-}
-
-impl Rectangle {
-    fn new(a: (f64, f64), b: (f64, f64), n: usize) -> Rectangle {
-        if a.0 > b.0 || a.1 > b.1 {
-            panic!("First argument must be the left-most, lowest point");
-        }
-        Rectangle {l_corner: a, u_corner: b, n: n}
-    }
-
-    fn x(&self) -> Vec<f64> {
-            Linspace::new(self.l_corner.0, self.u_corner.0, self.n)
-                .gen()
-                .collect()
-    }
-
-    fn y(&self) -> Vec<f64> {
-            Linspace::new(self.l_corner.1, self.u_corner.1, self.n)
-                .gen()
-                .collect()
-    }
-
-    fn grid(&self) -> impl Iterator<Item = (usize, usize)> + '_ {
-        (0..self.n).cartesian_product(0..self.n)
-    }
-
-    fn laplace(&self, stencil: Stencil) -> DMatrix<f64> {
-        // TODO
-        DMatrix::zeros(self.n, self.n)
-    }
-}
-
-// use nalgebra::sparse::CsMatrix;
-use num_traits::Float;
+mod square;
+use square::*;
+use std::fs::File;
+use std::io::prelude::*;
 
 fn main() {
-    let domain = Rectangle::new((0.0, 0.0), (1.0, 1.0), 5);
-    let stencil = Stencil::new(vec![(0, 0), (0, -1), (0, 1)], vec![-1.0, 2.0, -1.0]);
-    println!("{:?}", stencil);
-    println!("{:?}", stencil.bounds());
+    let domain = Square::new((0.0, 0.0), 1.0, 10);
+
+    let (m, rhs) = domain.laplace();
+
+    let s = m.to_string();
+    let data = s.as_bytes();
+
+    let mut pos = 0;
+    let mut buffer = File::create("matrix.txt").expect("Exists");
+
+    buffer.write_all(data);
 }
 
 /*
