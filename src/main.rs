@@ -1,6 +1,7 @@
 use nalgebra::{DMatrix, DVector};
 use itertools::Itertools;
 
+#[derive(Debug)]
 struct Linspace {
     from: f64,
     to: f64,
@@ -19,6 +20,26 @@ impl Linspace {
     fn gen(&self) -> impl Iterator<Item = f64> + '_ {
         (0..(self.n))
             .map(move |i| self.from + self.dx()*i as f64)
+    }
+}
+
+#[derive(Debug)]
+struct Stencil {
+    locs: Vec<(i32, i32)>,
+    vals: Vec<f64>
+}
+
+impl Stencil {
+    fn new(locs: Vec<(i32, i32)>, vals: Vec<f64>) -> Stencil {
+        Stencil { locs: locs, vals: vals }
+    }
+    
+    fn bounds(&self) -> ((i32, i32), (i32, i32)) {
+        let x_min = self.locs.iter().map(|x| x.0).min().expect("...interesting");
+        let y_min = self.locs.iter().map(|x| x.1).min().expect("...interesting");
+        let x_max = self.locs.iter().map(|x| x.0).max().expect("...interesting");
+        let y_max = self.locs.iter().map(|x| x.1).max().expect("...interesting");
+        ((x_min, x_max), (y_min, y_max))
     }
 }
 
@@ -52,6 +73,11 @@ impl Rectangle {
     fn grid(&self) -> impl Iterator<Item = (usize, usize)> + '_ {
         (0..self.n).cartesian_product(0..self.n)
     }
+
+    fn laplace(&self, stencil: Stencil) -> DMatrix<f64> {
+        // TODO
+        DMatrix::zeros(self.n, self.n)
+    }
 }
 
 // use nalgebra::sparse::CsMatrix;
@@ -59,12 +85,17 @@ use num_traits::Float;
 
 fn main() {
     let domain = Rectangle::new((0.0, 0.0), (1.0, 1.0), 5);
-    println!("{:?}", domain);
-    println!("{:?}", domain.x());
-    println!("{:?}", domain.grid().collect::<Vec<(usize, usize)>>());
+    let stencil = Stencil::new(vec![(0, 0), (0, -1), (0, 1)], vec![-1.0, 2.0, -1.0]);
+    println!("{:?}", stencil);
+    println!("{:?}", stencil.bounds());
 }
 
 /*
+    println!("{:?}", domain);
+    println!("{:?}", domain.x());
+    println!("{:?}", domain.grid().collect::<Vec<(usize, usize)>>());
+ *
+
     let a = Linspace::new(-1.0, 21.0, 30);
     println!("dx: {}", a.dx());
     println!("{:?}", a.gen());
