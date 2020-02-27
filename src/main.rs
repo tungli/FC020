@@ -2,22 +2,79 @@ mod square;
 use square::*;
 use std::fs::File;
 use std::io::prelude::*;
+use std::f64::consts::PI;
+
+use gnuplot::*;
+use std::vec::Vec;
+
+use nalgebra::base::DMatrix;
 
 fn main() {
-    let domain = Square::new((0.0, 0.0), 1.0, 10);
+    let size = 40;
+    let mut domain = Square::new((0.0, 0.0), 1.0, size);
 
-    let (m, rhs) = domain.laplace();
+    domain.set_upper_bc_dirichlet(|x| (-2.0*x).exp());
+    domain.set_left_bc_dirichlet(|x| (2.0*x).cos());
+    domain.set_lower_bc_dirichlet(|x| (-2.0*x).exp()*2.0_f64.cos());
+    domain.set_right_bc_dirichlet(|x| (2.0*x).cos()*(-2.0_f64).exp());
+
+    println!("BC set!");
+
+    print!("{}", domain.domain.to_string().as_str());
+
+    let (m, bc_rhs) = domain.laplace();
+
+    println!("Matrix assembled!");
+    
+    //print!("{}", m.to_string().as_str());
+    //print!("{}", bc_rhs.to_string().as_str());
 
     let s = m.to_string();
     let data = s.as_bytes();
 
-    let mut pos = 0;
     let mut buffer = File::create("matrix.txt").expect("Exists");
-
     buffer.write_all(data);
+
+    let s = bc_rhs.to_string();
+    let data = s.as_bytes();
+
+    let mut buffer = File::create("rhs.txt").expect("Exists");
+    buffer.write_all(data);
+
+    let res = m.cholesky().expect("Decomp. failed").solve(&bc_rhs);
+
+
+    println!("Matrix solved!");
+    
+    let mut fg = Figure::new();
+    
+    fg.axes3d()
+    	.set_title("Surface fg3.1", &[])
+    	.surface(res.iter(), size - 2, size - 2, None, &[])
+    	.set_x_label("X", &[])
+    	.set_y_label("Y", &[])
+    	.set_z_label("Z", &[])
+        .set_view_map();
+    
+    fg.show().unwrap();
 }
 
+
+
 /*
+ *
+    let s = m.to_string();
+    let data = s.as_bytes();
+
+    let mut buffer = File::create("matrix.txt").expect("Exists");
+    buffer.write_all(data);
+
+    let s = rhs.to_string();
+    let data = s.as_bytes();
+
+    let mut buffer = File::create("rhs.txt").expect("Exists");
+    buffer.write_all(data);
+ *
     println!("{:?}", domain);
     println!("{:?}", domain.x());
     println!("{:?}", domain.grid().collect::<Vec<(usize, usize)>>());
