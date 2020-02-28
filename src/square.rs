@@ -1,5 +1,4 @@
-use nalgebra::{DMatrix, DVector};
-use itertools::Itertools;
+use nalgebra::{DMatrix, DVector, CsMatrix, Dynamic};
 
 #[derive(Debug)]
 pub struct Linspace {
@@ -116,13 +115,16 @@ impl Square {
 //        (0..self.n).cartesian_product(0..self.n)
 //    }
 
-    pub fn laplace(&self) -> (DMatrix<f64>, DVector<f64>) {
+    pub fn laplace(&self) -> (CsMatrix<f64, Dynamic, Dynamic>, DVector<f64>) {
         let stencil: [(isize, isize); 5] = [(0,0), (1,0), (-1, 0), (0, 1), (0, -1)];
         let stencil_vals: [f64; 5] = [4.0, -1.0, -1.0, -1.0, -1.0];
 
         let size = (self.n - 2)*(self.n - 2);
-        let mut m = DMatrix::zeros(size, size);
         let mut rhs = DVector::zeros(size);
+        
+        let mut rows: Vec<usize> = Vec::new();
+        let mut cols: Vec<usize> = Vec::new();
+        let mut vals: Vec<f64> = Vec::new();
 
         for ix in 1..(self.n - 1) {
             for iy in 1..(self.n - 1) {
@@ -136,11 +138,14 @@ impl Square {
                             rhs[k] += - v*self.domain[(i, j)]
                         } else {
                             let l = self.sub2ind_interior((i, j));
-                            m[(k, l)] = v.clone();
+                            rows.push(k);
+                            cols.push(l);
+                            vals.push(*v);
                         }
                     }
             }
         }
+        let m = CsMatrix::from_triplet(size, size, &rows, &cols, &vals);
         (m, rhs)
     }
 }

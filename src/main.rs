@@ -1,16 +1,19 @@
 mod square;
+mod cg_sparse;
+
 use square::*;
-use std::fs::File;
-use std::io::prelude::*;
-use std::f64::consts::PI;
+use cg_sparse::*;
+
+//use std::fs::File;
+//use std::io::prelude::*;
+//
+//use std::vec::Vec;
 
 use gnuplot::*;
-use std::vec::Vec;
 
-use nalgebra::base::DMatrix;
 
 fn main() {
-    let size = 40;
+    let size = 200;
     let mut domain = Square::new((0.0, 0.0), 1.0, size);
 
     domain.set_upper_bc_dirichlet(|x| (-2.0*x).exp());
@@ -29,20 +32,20 @@ fn main() {
     //print!("{}", m.to_string().as_str());
     //print!("{}", bc_rhs.to_string().as_str());
 
-    let s = m.to_string();
-    let data = s.as_bytes();
+    //let s = m.to_string();
+    //let data = s.as_bytes();
 
-    let mut buffer = File::create("matrix.txt").expect("Exists");
-    buffer.write_all(data);
+    //let mut buffer = File::create("matrix.txt").expect("Exists");
+    //buffer.write_all(data);
 
-    let s = bc_rhs.to_string();
-    let data = s.as_bytes();
+    //let s = bc_rhs.to_string();
+    //let data = s.as_bytes();
 
-    let mut buffer = File::create("rhs.txt").expect("Exists");
-    buffer.write_all(data);
+    //let mut buffer = File::create("rhs.txt").expect("Exists");
+    //buffer.write_all(data);
 
-    let res = m.cholesky().expect("Decomp. failed").solve(&bc_rhs);
-
+ //   let res = m.cholesky().expect("Decomp. failed").solve(&bc_rhs);
+    let res = conjugate_gradient(&m, &bc_rhs, 1e-6, None);
 
     println!("Matrix solved!");
     
