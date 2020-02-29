@@ -1,7 +1,12 @@
 use nalgebra::{DVector, CsMatrix, CsVector, Dynamic};
 use std::ops::{Add,Mul};
 
-pub fn conjugate_gradient(m: &CsMatrix<f64>, rhs: &DVector<f64>, tol: f64, max_iter: Option<u32>) -> DVector<f64> {
+pub fn conjugate_gradient(m: &CsMatrix<f64>,
+                          rhs: &DVector<f64>,
+                          tol: f64,
+                          max_iter: Option<u32>
+                          ) -> DVector<f64> {
+
     let n_iters = max_iter.unwrap_or(1000);
     println!("Iters: {}", n_iters);
     
@@ -21,13 +26,13 @@ pub fn conjugate_gradient(m: &CsMatrix<f64>, rhs: &DVector<f64>, tol: f64, max_i
 
         println!("Residual {}", r2_new);
 
-        if r2_new < tol {
+        if r2_new.sqrt() < tol {
             return x.into();
         }
         let b = r2_new/r2;
         p = r.add(&(p.mul(b)));
         r2 = r2_new;
     }
-    println!("Maximum number of iteration reached.");
+    println!("Maximum number of iterations reached.");
     x.into()
 }

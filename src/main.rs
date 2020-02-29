@@ -17,7 +17,6 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let size = args[1].parse::<usize>().unwrap();
 
-    //let size = 100;
     let mut domain = Square::new((0.0, 0.0), 1.0, size);
 
     domain.set_upper_bc_dirichlet(|x| (-2.0*x).exp());
@@ -33,8 +32,7 @@ fn main() {
 
     println!("Matrix assembled!");
     
-
-    let res = conjugate_gradient(&m, &bc_rhs, 1e-8, None);
+    let res = conjugate_gradient(&m, &bc_rhs, 1e-8, Some(2000));
 
     println!("Matrix solved!");
 
