@@ -1,4 +1,4 @@
-# Metoda ciar
+# Metoda priamok
 
 Difuznu rovnicu s rekombinaciou semi-diskretizujem ako:
 
@@ -28,4 +28,11 @@ Pre opacny koniec:
     \frac{\rm{d} u_{N-1}}{\rm{d} t} = D_{\rm{a}} \frac{u_{N-2} - 2 u_{N-1}}{\Delta x^2} - \alpha u_{N-1}^2
 \end{gather}
 
+
+# Analyticke riesenie
+
+\begin{gather}
+    u(x, t) = \sum_n \rm{e}^{-D \frac{n^2 \pi^2}{4 L^2} t} A_n \cos \left( \frac{n \pi x}{2 L} \right) \\
+    u(x, 0) = \sum_n A_n \cos \left( \frac{n \pi x}{2 L} \right) = f(x)
+\end{gather}
 

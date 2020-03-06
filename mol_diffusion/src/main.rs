@@ -1,7 +1,7 @@
-use lsode::solve_ode;
+use lsode::{solve_ode, linspace};
+use std::fs::File;
+use std::io::Write;
 
-const N: usize = 200;
-const X: f64 = 25.0;
 
 fn init_state<F>(n: usize, x_max: f64, f: F) -> Vec<f64> where F: Fn(f64) -> f64
 {
@@ -9,36 +9,50 @@ fn init_state<F>(n: usize, x_max: f64, f: F) -> Vec<f64> where F: Fn(f64) -> f64
     y0
 }
 
-fn derivs(y: &[f64], t: &f64) -> Vec<f64> {
-    let alpha = 2e-7;
-    let D = 2000.0;
-    let n = N;
-    let x_max = X;
-    let dx = x_max/n as f64;
-    let k = D/dx/dx;
 
-    let mut dy: Vec<f64> = (0..n).map(|_| 0.0).collect();
-
-    dy[0] = k*2.0*(y[1] - y[0]) - alpha*y[0]*y[0];
-    for i in 1..(n-1) {
-        dy[i] = k*(y[i-1] - 2.0*y[i] + y[i+1]) - alpha*y[i]*y[i];
-    }
-    dy[n-1] = k*(y[n-2] - 2.0*y[n-1]) - alpha*y[n-1]*y[n-1];
-    dy
-}
-
-fn main() {
+fn main() -> std::io::Result<()> {
     // all in cm, otherwise SI.
-    let size = N;
-    let t_final = 1e0;
-    let n_times = 50000;
-    let x_max = X;
+    let size: usize = 200;
+    let x_max: f64 = 25.0;
 
+    let t_final = 1e1;
+    let n_times = 100000;
+    let alpha = 2e-7;
+    let diff_coef = 2000.0;
+
+    let derivs = |y: &[f64], _t: &f64| {
+        let n = size;
+        let dx = x_max/n as f64;
+        let k = diff_coef/dx/dx;
+    
+        let mut dy: Vec<f64> = (0..n).map(|_| 0.0).collect();
+    
+        dy[0] = k*2.0*(y[1] - y[0]) - alpha*y[0]*y[0];
+        for i in 1..(n-1) {
+            dy[i] = k*(y[i-1] - 2.0*y[i] + y[i+1]) - alpha*y[i]*y[i];
+        }
+        dy[n-1] = k*(y[n-2] - 2.0*y[n-1]) - alpha*y[n-1]*y[n-1];
+        dy
+    };
+
+    let ts = linspace(0.0, t_final, n_times);
     let y0 = init_state(size, x_max, |x| if x > 10.0 { 0.0 } else { 2e11 });
-    let ts: Vec<f64> = (0..n_times).map(|i| t_final/(n_times - 1) as f64 * i as f64).collect();
 
-    let res = solve_ode(derivs, &y0, ts.clone(), 1e-6, 1e-6);
-    println!("{:?}", res.last());
+    let res = solve_ode(derivs, &y0, ts.clone(), 1e-3, 1e-3);
 
+
+    let save_at: Vec<usize> = [1, 11, 1001, 10001, 100000].iter().map(|i| i-1 as usize).collect();
+
+    for (i, t) in (0..save_at.len()).zip(save_at.iter().map(|j| ts[*j]).collect::<Vec<f64>>()) {
+        let filename = format!("../results_mol_diffusion/results_{}.out", i);
+        println!("i: {} -> {}", i, t);
+        let mut buf = File::create(filename)?;
+
+        write!(buf, "{} {}\n", t, t)?;
+        for (y, x) in res[save_at[i]].iter().zip(linspace(0.0, x_max, size)) {
+            write!(buf, "{} {}\n", x, y)?;
+        }
+    }
+    Ok(())
 }
 
