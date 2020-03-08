@@ -8,3 +8,6 @@ edition = "2018"
 
 [dependencies]
 lsode = "0.2"
+gnuplot = "0.0.34"
+nalgebra = "0.20.0"
+
