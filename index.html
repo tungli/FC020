@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <meta charset=utf-8>
+    <title>plotly-webpack</title>
+    <link href="styles/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <label for="domain_size">Size (20 -- 200):</label>
+    <input type="number" id="domain_size" name="Where" min="20" max="200" value="25">
+    <div id="button">
+      <input id="recalc" type="button" value="Recalculate"/>
+      <input id="error_calc" type="button" value="Calculate Error"/>
+    </div>
+    <div id="gd"></div>
+    <script src="bundle.js"></script>
+  </body>
+</html>
