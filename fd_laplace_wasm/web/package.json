@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "serve": "webpack-dev-server"
+  },
+  "dependencies": {
+    "@tungli/fd_laplace_wasm": "^0.1.6",
+    "plotly.js": "^1.52.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10",
+    "ify-loader": "^1.1.0",
+    "transform-loader": "^0.2.4"
+  }
+}

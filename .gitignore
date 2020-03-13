@@ -1,4 +1,6 @@
 /target
 
+/fd_laplace_wasm/web/node_modules
+
 *.swp
 *.swo
