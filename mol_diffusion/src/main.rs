@@ -20,6 +20,8 @@ fn main() -> std::io::Result<()> {
     let alpha = 2e-7;
     let diff_coef = 2000.0;
 
+    let x = linspace(0.0, x_max, size);
+
     let derivs = |y: &[f64], _t: &f64| {
         let n = size;
         let dx = x_max/n as f64;
@@ -29,9 +31,10 @@ fn main() -> std::io::Result<()> {
     
         dy[0] = k*2.0*(y[1] - y[0]) - alpha*y[0]*y[0];
         for i in 1..(n-1) {
-            dy[i] = k*(y[i-1] - 2.0*y[i] + y[i+1]) - alpha*y[i]*y[i];
+            dy[i] = diff_coef/dx/2.0/x[i]*(y[i+1] - y[i-1]) + 
+                k*(y[i-1] - 2.0*y[i] + y[i+1]) - alpha*y[i]*y[i];
         }
-        dy[n-1] = k*(y[n-2] - 2.0*y[n-1]) - alpha*y[n-1]*y[n-1];
+        dy[n-1] = diff_coef/dx/2.0/x[n-1]*y[n-2] + k*(y[n-2] - 2.0*y[n-1]) - alpha*y[n-1]*y[n-1];
         dy
     };
 

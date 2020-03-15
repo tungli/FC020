@@ -11,7 +11,7 @@ def plot_diffusion(ts):
         x, y = zip(*data[1:]) 
         plt.plot(x, np.array(y)/np.max(y), 'k{}'.format(s), label=r"$t=${:.1e} s".format(t)) 
 
-    plt.plot(x, np.cos(np.pi*np.array(x)/25.0/2), 'r--', label='anal.: $n=0$')
+    plt.plot(x, 25/np.pi*np.sin(np.pi*np.array(x)/25.0)/np.array(x), 'r--', label='anal.: $n=0$')
 
     plt.xlabel(r"$x$ [cm]") 
     plt.ylabel(r"$u/u_{max}$") 

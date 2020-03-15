@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "serve": "webpack-dev-server"
+    "serve": "webpack-dev-server",
+    "build": "webpack"
   },
   "dependencies": {
     "@tungli/fd_laplace_wasm": "^0.1.6",
