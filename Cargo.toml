@@ -1,2 +1,2 @@
 [workspace]
-members = ["fd_laplace", "mol_diffusion", "linear_regression", "fd_laplace_wasm"]
+members = ["fd_laplace", "mol_diffusion", "linear_regression", "web_stuff"]

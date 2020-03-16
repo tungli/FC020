@@ -1,9 +1,12 @@
 const path = require('path');
 module.exports = {
-  entry: "./index.js",
+  entry: {
+    fd_laplace: "./fd_laplace.js",
+    mol_diffusion: "./mol_diffusion.js"
+  },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js"
+    filename: "[name].bundle.js"
   },
   mode: "development",
   module: {
