@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>linearna regresia - parabola</title>
+  <link href="styles/style.css" rel="stylesheet">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<header id="title-block-header">
+<h1 class="title">Linearna regresia</h1>
+</header>
+<p><em>V texte su vynechane vektorove znacenia. Veliciny <span class="math inline">\(\theta, y, \epsilon\)</span> su vektorove veliciny.</em></p>
+<p>Linearna regresia je odhad vektoru parametrov <span class="math inline">\(\theta\)</span> pomocou linearneho modelu <span class="math inline">\(m = \mathbf{A} \theta\)</span>, o ktorom dufame, ze pre odhadnute <span class="math inline">\(\hat{\theta}\)</span> bude <span class="math inline">\(m \approx y\)</span>, kde <span class="math inline">\(y\)</span> su data. <span class="math inline">\(\mathbf{A}\)</span> je modelova matica a pre tento problem ma tvar: <span class="math display">\[\begin{gather}
+    \mathbf{A} = 
+    \begin{pmatrix}
+        1 &amp; x_0^2 \\ 
+        \vdots &amp; \vdots \\
+        1 &amp; x_N^2
+    \end{pmatrix}
+\end{gather}\]</span></p>
+<p>V linearnom pripade su odhady parametrov vypocitane ako: <span class="math display">\[\begin{gather}
+    \hat{\theta} = \left(
+                   \mathbf{A}^{\mathrm{T}} \mathbf{W} \mathbf{A} 
+             \right)^{-1} 
+             \mathbf{A}^{\mathrm{T}} \mathbf{W} y,
+\end{gather}\]</span> kde <span class="math inline">\(\mathbf{W}\)</span> je vahova matica. V tomto probleme sa neuplatini, bude identita, kedze body maju rovnaku vahu. Vzorec je mozne odvodit z minimalizacie <span class="math inline">\(g = \sum_{i=1}^{N} (y_i - m_i) w_{ij} (y_j - m_j)\)</span>.</p>
+<p>Chyby a korelacie parametrov su dane kovariancnou maticou: <span class="math display">\[\begin{gather}
+    c_{ij} \equiv \mathrm{Cov}(x_i,x_j) = E((x_i - E(x_i)) (x_j - E(x_j))) = E(x_i x_j) - E(x_i) E(x_j)
+\end{gather}\]</span> Oznacim: <span class="math display">\[\begin{gather}
+    \xi_{ij} \equiv \left( \left( \mathbf{A}^{\mathrm{T}} \mathbf{A} \right)^{-1} \mathbf{A}^{\mathrm{T}}  \right)_{ij}
+\end{gather}\]</span> potom dosadenim odhadov <span class="math inline">\(\hat{\theta}\)</span> (uz s <span class="math inline">\(W = I\)</span>): <span class="math display">\[\begin{gather}
+    \mathrm{Cov} (\hat{\theta}_i, \hat{\theta}_j) = 
+        E \left(\xi_{ki} y_i  \xi_{lj} y_j
+        \right)
+        - E \left(\xi_{ki} y_i \right)
+        E \left(\xi_{lj} y_j \right) = \\
+        \xi_{ki} \mathrm{Cov}(y_i, y_j) \xi_{jl}
+\end{gather}\]</span> Predpokladame, ze <span class="math inline">\(\mathbf{C}(y,y)\)</span> je diagonalna, ale s neznamym rozpylom (rovnaky pre vsetky body). Nevychyleny odhad rozptylu je: <span class="math display">\[\begin{gather}
+    \sigma_y^2 \approx s_y^2 = \frac{\epsilon_i \epsilon_i}{N - p},
+\end{gather}\]</span> kde <span class="math inline">\(N\)</span> je pocet bodov <span class="math inline">\(y\)</span> a <span class="math inline">\(p\)</span> je pocet fitovanych parametrov.</p>
+<h1 id="intervalovy-odhad">Intervalovy odhad</h1>
+<p>Odhadovane parametre su tiez nahodne premenne. Rozdelenie <span class="math inline">\(\epsilon\)</span> je nahodne s nulovym prvym momentom a rozpylom <span class="math inline">\(\sigma_y^2\)</span>. Z toho vyplyva, ze rozdelenie <span class="math inline">\(\hat{\theta} - \theta\)</span> je tiez normalne, kedze je dane linearnym vztahom z <span class="math inline">\(\epsilon\)</span>. Rozdelenie <span class="math inline">\(\frac{\epsilon_i \epsilon_i}{\sigma_y^2} \equiv R\)</span> je <span class="math inline">\(\chi^2\)</span> z definicie <span class="math inline">\(\chi^2\)</span>. Zaujima nas, z akeho rozdelenia bude <span class="math inline">\(\theta\)</span>. Odhadovany rozptyl parametrov <span class="math inline">\(s_{\hat{\theta}}^2\)</span> je dany diagonalou <span class="math inline">\(\mathbf{C}(\hat{\theta}, \hat{\theta})\)</span> a suvisi s odhadnutym rozpytlom <span class="math inline">\(s_y^2\)</span>: <span class="math display">\[\begin{gather}
+    s_{\hat{\theta}i}^2 = \mathrm{Cov}(\hat{\theta}_i, \hat{\theta}_i) = \xi_{ik} \mathrm{Cov}(y_k, y_l) \xi_{li} =  s_y^2 \xi_{ik} \xi_{ki}
+\end{gather}\]</span></p>
+<p>Potom vyraz: <span class="math display">\[\begin{gather}
+    t_i = \frac{\theta_i - \hat{\theta}_i}{s_{\theta i}} =
+        \frac{\theta_i - \hat{\theta}_i}{\xi_{ik} \xi_{ki} s_y} =
+        \frac{\theta_i - \hat{\theta}_i}{\xi_{ik} \xi_{ki}} \sqrt{\frac{(N - p) \sigma_y^2}{R}}
+\end{gather}\]</span> je zo Studentovho <span class="math inline">\(t\)</span>-rozdelenia a je mozne ho pouzit pre konstrukciu intervalu spolahlivosti. Konkretne: <span class="math display">\[\begin{gather}
+    \mathrm{Pr}(-\tau &lt; t &lt; \tau) = 1 - \alpha,
+\end{gather}\]</span> kde <span class="math inline">\(\tau\)</span> je hodnota (kvantil), pre ktoru <span class="math inline">\(T(\tau) = 1 - \frac{\alpha}{2}\)</span>, kde <span class="math inline">\(T\)</span> je (kumulativna) Studentova distribucna funkcia. Vyraz je mozne pretvorit na tvrdenie o <span class="math inline">\(\theta\)</span>: <span class="math display">\[\begin{gather}
+    \mathrm{Pr}(\hat{\theta} - s_\theta \tau &lt; \theta &lt; \hat{\theta} + s_\theta \tau) = 1 - \alpha,
+\end{gather}\]</span> co by malo byt ekvivalentne tvdeniu, ze <span class="math inline">\(\theta\)</span> lezia s pravdepodobnostou <span class="math inline">\(1 - \alpha\)</span> v intervale: <span class="math display">\[\begin{gather}
+    \theta \in [ \hat{\theta} - s_\theta \tau, \hat{\theta} + s_\theta \tau ]
+\end{gather}\]</span></p>
+<h1 id="pas-spolahlivosti">Pas spolahlivosti</h1>
+<p>Pre pas spolahlivosti okolo celej krivky existuje podobny postup ako vyssie (podrobne v <span class="citation" data-cites="casella">(Casella 2002)</span> a <span class="citation" data-cites="kutner">(Michael H Kutner 2005)</span>, alebo <a href="https://en.wikipedia.org/wiki/Working–Hotelling_procedure">tiez</a>).</p>
+<p><span class="math display">\[\begin{gather}
+    \mathrm{Var}(a_{ij} \theta_j) = a_{ij} a_{ik} \mathrm{Cov}(\theta_j, \theta_k)
+\end{gather}\]</span> alebo v maticovom zapise: <span class="math display">\[\begin{gather}
+    s_m^2 = \mathrm{diag} \left( \mathbf{A} \mathbf{C}(\theta, \theta) \mathbf{A}^\mathrm{T} \right)
+\end{gather}\]</span></p>
+<p>Znova potrebujeme najst rozdelenie vyrazu:</p>
+<p><span class="math display">\[\begin{gather}
+    f_i = \frac{A \theta - A \hat{\theta}}{s_m}
+\end{gather}\]</span></p>
+<p>pre vycislenie tvrdenia: <span class="math display">\[\begin{gather}
+    \mathrm{Pr}(\mathbf{A} \hat{\theta} - s_m \phi &lt; \mathbf{A} \theta &lt; \mathbf{A} \hat{\theta} + s_m \phi~~\mathrm{for~all}~x) = 1 - \alpha
+\end{gather}\]</span></p>
+<p>Ukazuje sa, ze <span class="math inline">\(\phi^2\)</span> je z <span class="math inline">\(F\)</span>-rozdelenia: <span class="math display">\[\begin{gather}
+    \phi = \sqrt{2 F_{\alpha; p, N-p}}
+\end{gather}\]</span></p>
+<h1 id="intervalovy-odhad-chyby">Intervalovy odhad chyby</h1>
+<p>Ako bolo pouzite vyssie rozptyl data je odhadnuty z: <span class="math display">\[\begin{gather}
+    \sigma_y^2 \approx s_y^2 = \frac{\epsilon_i \epsilon_i}{N - p}
+\end{gather}\]</span> a vyraz: <span class="math display">\[\begin{gather}
+    c = \frac{\epsilon_i \epsilon_i}{\sigma_y^2} = \frac{s_y^2 (N - p)}{\sigma_y^2}
+\end{gather}\]</span> je z <span class="math inline">\(\chi^2\)</span>-rozdelenia (<span class="math inline">\(N-p\)</span> stupnov volnosti). To znamena, ze: <span class="math display">\[\begin{gather}
+    \mathrm{Pr} \left( \sigma_l \le \sigma_y \le \sigma_u \right) = 1 - \alpha \\
+    \mathrm{Pr} \left( \sigma_l^2 \le \sigma_y^2 \le \sigma_u^2 \right) = 1 - \alpha \\
+    \mathrm{Pr} \left( \frac{(N - p) s_y^2}{\sigma_l^2} \ge \frac{(N - p) s_y^2}{\sigma_y^2} \ge \frac{(N - p) s_y^2}{\sigma_u^2} \right) = 1 - \alpha
+\end{gather}\]</span></p>
+<p>Krajne hodnoty teda budu: <span class="math display">\[\begin{gather}
+    \sigma_u = \sqrt{\frac{(N - p) s_y^2}{c_{\alpha/2}}} \\
+    \sigma_l = \sqrt{\frac{(N - p) s_y^2}{c_{1 - \alpha/2}}},
+\end{gather}\]</span> kde <span class="math inline">\(c_\beta\)</span> je definovana ako: <span class="math display">\[\begin{gather}
+    \beta = \int_0^{c_\beta} \chi^2(x) \mathrm{d} x
+\end{gather}\]</span></p>
+<div id="refs" class="references hanging-indent" role="doc-bibliography">
+<div id="ref-casella">
+<p>Casella, George. 2002. <em>Statistical Inference</em>. Australia Pacific Grove, CA: Thomson Learning.</p>
+</div>
+<div id="ref-kutner">
+<p>Michael H Kutner, John Neter, Christopher J. Nachtsheim. 2005. <em>Applied Linear Statistical Models</em>. 5th ed. The Mcgraw-Hill/Irwin Series Operations and Decision Sciences. McGraw-Hill Irwin.</p>
+</div>
+</div>
+</html>
+

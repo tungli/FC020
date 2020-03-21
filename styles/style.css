@@ -4,3 +4,16 @@ body {
   background-color: #FFFAFA;
   padding: 0 20px 20px 20px;
 }
+
+#inputs {
+  line-height: 200%;
+}
+
+#outputs {
+    font-family: monospace;
+}
+
+#tests_output {
+    font-family: monospace;
+    line-height: 150%;
+}
