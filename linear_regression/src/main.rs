@@ -6,8 +6,7 @@ use nalgebra::{U90, U2, MatrixMN, VectorN};
 use nalgebra::base::dimension::Dim;
 use std::ops::Mul;
 
-use special::Beta;
-use special::Gamma;
+use puruspe::{betai, gammp};
 
 use roots::{find_root_brent, SimpleConvergency};
 
@@ -46,7 +45,7 @@ fn f_cumdist(x: f64, d1: f64, d2: f64) -> f64 {
     let d1x = d1*x;
     let z = d1x/(d1x + d2);
     let (d12, d22) = (d1/2.0, d2/2.0);
-    z.inc_beta(d12, d22, d12.ln_beta(d22))
+    betai(d12, d22, z)
 }
 
 fn f_value(alpha: f64, d1: f64, d2: f64) -> Option<f64> {
@@ -62,7 +61,7 @@ fn f_value(alpha: f64, d1: f64, d2: f64) -> Option<f64> {
 fn chi_cumdist(x: f64, k: i32) -> f64{
     let k2 = k as f64/2.0;
     let x2 = x/2.0;
-    x2.inc_gamma(k2)
+    gammp(k2, x2)
 }
 
 fn chi_value(alpha: f64, k: i32) -> Option<f64> {
@@ -78,8 +77,8 @@ fn chi_value(alpha: f64, k: i32) -> Option<f64> {
 fn main() {
     let alpha = 0.05;
     let (n, p) = (N{}.value(), P{}.value());
-    let sigma = 0.1;
-    let (xs, ys) = gen_data(sigma, 1231);
+    let sigma = 10.0;
+    let (xs, ys) = gen_data(sigma, 65852132);
 
     let mut model_mat_vec = vec![1.0_f64; n];
     model_mat_vec.extend(xs.iter().map(|x| x*x));

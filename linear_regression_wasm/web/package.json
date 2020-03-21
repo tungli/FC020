@@ -4,8 +4,7 @@
     "build": "webpack"
   },
   "dependencies": {
-    "@tungli/fd_laplace_wasm": "^0.1.6",
-    "@tungli/fc020_lr_wasm": "^0.0.22",
+    "@tungli/fc020_lr_wasm": "0.0.22",
     "plotly.js": "^1.52.0"
   },
   "devDependencies": {

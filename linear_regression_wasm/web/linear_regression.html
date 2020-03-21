@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Linearna regresia</title>
+  <title>linearna regresia - parabola</title>
+  <link href="styles/style.css" rel="stylesheet">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -19,6 +20,46 @@
   <![endif]-->
 </head>
 <body>
+<h1> Demonstracia </h1>
+    <div id="inputs">
+        <label for="sigma">&sigma; (0.01 - 100):</label>
+        <input type="number" id="sigma" name="sigma" min="0.01" max="100" value="0.1"> 
+        <br>
+        <label for="seed">Seed:</label>
+        <input type="number" id="seed" name="seed" min="1" step="1" value="65852134">
+        <br>
+        <label for="alpha">&alpha; (0.01 - 0.45):</label>
+        <input type="number" id="alpha" name="alpha" min="0.01" max="0.45" step="0.01" value="0.05">
+    </div>
+    <div id="button">
+      <input id="plot" type="button" value="Plot"/>
+    </div>
+
+    <div id="gd"></div>
+
+    <div id="fit_button">
+      <input id="fit" type="button" value="Fit!"/>
+    </div>
+
+    <div id="outputs">
+        <h3>Outputs:</h3>
+        <p id="stats"> </p>
+    </div>
+
+    <div id="tests_button">
+      <input id="tests" type="button" value="Run tests"/>
+    </div>
+
+    <div id="tests_output">
+        <h3>Test Results:</h3>
+        <p id="tests_results"> </p>
+    </div>
+
+  <script src="dist/linear_regression.bundle.js"></script>
+  </body>
+
+</body>
+
 <header id="title-block-header">
 <h1 class="title">Linearna regresia</h1>
 </header>
@@ -107,5 +148,5 @@
 <p>Michael H Kutner, John Neter, Christopher J. Nachtsheim. 2005. <em>Applied Linear Statistical Models</em>. 5th ed. The Mcgraw-Hill/Irwin Series Operations and Decision Sciences. McGraw-Hill Irwin.</p>
 </div>
 </div>
-</body>
 </html>
+
