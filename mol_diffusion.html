@@ -32,14 +32,15 @@
             - \alpha u_i^2
 \end{equation}\]</span></p>
 <p>co je sustava ODR, ktore je mozne numericky integrovat.</p>
-<p>Na ose valcove nadoby (<span class="math inline">\(i = 0\)</span>) davam okrajovu podmienku symetrie, na okraji domeny (<span class="math inline">\(i = N\)</span>) predpokladam stenu nadoby, na ktorej iony a elektrony rekombinuju instantne (zjednodusenie, ale na tejto okrajovej podmienke snad vysledok zalezat nebude) - koncentraciu davam nulovu. Prva okrajova podmienka je Neumann-ovho typu - derivacia je nulova, druha je Dirichletova.</p>
+<p>V strede nadoby (<span class="math inline">\(i = 0\)</span>) davam okrajovu podmienku symetrie, na okraji domeny (<span class="math inline">\(i = N\)</span>) predpokladam stenu nadoby, na ktorej iony a elektrony rekombinuju instantne - koncentraciu davam nulovu. Prva okrajova podmienka je Neumann-ovho typu - derivacia je nulova, druha je Dirichletova.</p>
 <p>To sa prejavi v diskretizacii nasledovnym sposobom:</p>
 <p><span class="math display">\[\begin{gather}
     0 = \frac{\partial u}{\partial x} \lvert_{x=0} \approx \frac{u_{-1} - u_{1}}{\Delta x} \qquad \rightarrow \qquad
     u_{1} = u_{-1} \qquad \rightarrow \nonumber \\
     \frac{u_{-1} - 2 u_0 + u_{1}}{\Delta x^2} = \frac{-2 u_0 + 2 u_{1}}{\Delta x^2} \\
-    \frac{u_1 - u_{-1}}{2 \Delta x} = 0 \\
-    \frac{\rm{d} u_0}{\rm{d} t} = D_{\rm{a}} \frac{-2 u_0}{\Delta x^2} - \alpha u_0^2
+    \lim_{x \rightarrow 0} \frac{2}{x} \frac{\partial u}{\partial x} = \lim_{x \rightarrow 0} \frac{2 \partial^2 u}{\partial x^2} \approx
+    \frac{2 u_{-1} - 4 u_0 + 2 u_{1}}{\Delta x^2} = \frac{-4 u_0 + 4 u_{1}}{\Delta x^2} \\ 
+    \frac{\rm{d} u_0}{\rm{d} t} = D_{\rm{a}} \frac{-6 u_0 + 6 u_{1}}{\Delta x^2} - \alpha u_0^2
 \end{gather}\]</span></p>
 <p>Pre opacny koniec: <span class="math display">\[\begin{gather}
     \frac{\rm{d} u_{N-1}}{\rm{d} t} = D_{\rm{a}} 
