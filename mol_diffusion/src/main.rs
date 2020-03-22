@@ -29,7 +29,7 @@ fn main() -> std::io::Result<()> {
     
         let mut dy: Vec<f64> = (0..n).map(|_| 0.0).collect();
     
-        dy[0] = k*2.0*(y[1] - y[0]) - alpha*y[0]*y[0];
+        dy[0] = k*6.0*(y[1] - y[0]) - alpha*y[0]*y[0];
         for i in 1..(n-1) {
             dy[i] = diff_coef/dx/x[i]*(y[i+1] - y[i-1]) + 
                 k*(y[i-1] - 2.0*y[i] + y[i+1]) - alpha*y[i]*y[i];
